@@ -4,3 +4,9 @@ c:\users\skproch\documents\visual studio 2017\Projects\ConsoleApp1\ConsoleApp1\b
 c:\users\skproch\documents\visual studio 2017\Projects\ConsoleApp1\ConsoleApp1\obj\Debug\ConsoleApp1.exe
 c:\users\skproch\documents\visual studio 2017\Projects\ConsoleApp1\ConsoleApp1\obj\Debug\ConsoleApp1.pdb
 C:\Users\SKProCH\documents\visual studio 2017\Projects\ConsoleApp1\ConsoleApp1\obj\Debug\ConsoleApp1.csprojResolveAssemblyReference.cache
+C:\Users\SKProCH\Documents\Visual Studio 2017\Projects\ProgressBar\C-ProgressBar-For-Download\bin\Debug\ConsoleApp1.exe.config
+C:\Users\SKProCH\Documents\Visual Studio 2017\Projects\ProgressBar\C-ProgressBar-For-Download\bin\Debug\ConsoleApp1.exe
+C:\Users\SKProCH\Documents\Visual Studio 2017\Projects\ProgressBar\C-ProgressBar-For-Download\bin\Debug\ConsoleApp1.pdb
+C:\Users\SKProCH\Documents\Visual Studio 2017\Projects\ProgressBar\C-ProgressBar-For-Download\obj\Debug\ConsoleApp1.csprojResolveAssemblyReference.cache
+C:\Users\SKProCH\Documents\Visual Studio 2017\Projects\ProgressBar\C-ProgressBar-For-Download\obj\Debug\ConsoleApp1.exe
+C:\Users\SKProCH\Documents\Visual Studio 2017\Projects\ProgressBar\C-ProgressBar-For-Download\obj\Debug\ConsoleApp1.pdb
