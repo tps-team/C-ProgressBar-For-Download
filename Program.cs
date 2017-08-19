@@ -15,9 +15,10 @@ namespace ConsoleApp1
         {
 
             Console.ReadKey(true);
-            string url = "PASTE YOUR URL HERE";
+            string url = "ftp://updater:thisispassword@31.25.29.138/usb1_1/minecraft/DontTouchThisFolder/Client.zip";
+            url = "https://getfile.dokpub.com/yandex/get/https://yadi.sk/d/kYVV_e0z3M7VfB";
             string path = @"C:\Program Files\";
-            string name = "Example.Ultimate";
+            string name = "Необходимо удалить.jar";
             DWL(url, path, name);
             Console.ReadKey(true);
             /*
@@ -30,21 +31,23 @@ namespace ConsoleApp1
         }
 
         public static bool DCompleted = false;
-        public static bool PrintCompleted = false;
+        public static bool PrlongCompleted = false;
         public static bool AfterDWNEnd = false;
         public static long totalBytes;
-        public static int Time = 1;
-        public static int TExpired = 0;
-        public static int TExpired1 = 0;
-        public static int TExpired2 = 0;
-        public static int TNeed = 0;
-        public static int DSpeed = 0;
-        public static int PER1 = 3;
-        public static int PER2 = 2;
+        public static long Time = 1;
+        public static long TExpired = 0;
+        public static long TExpired1 = 0;
+        public static long TExpired2 = 0;
+        public static long TNeed = 0;
+        public static long DSpeed = 0;
+        public static long PER1 = 3;
+        public static long PER2 = 2;
         public static string nametowrite;
         public static int Per = 0;
-        public static int MbRecieved = 0;
+        public static long MbRecieved = 0;
         public static int pointwrited = 0;
+        public static long MBTotal = 0;
+
 
         static void DWL(string url, string path, string name)
         {
@@ -77,15 +80,16 @@ namespace ConsoleApp1
                 long BytesRemaining = 0;
                 if (isFTP == true)
                 {
-                    Per = (int)(e.BytesReceived * 100 / totalBytes);
-                    BytesRemaining = totalBytes - e.BytesReceived;
+                    Per = Convert.ToInt32(e.BytesReceived * 100 / e.TotalBytesToReceive);
+                    BytesRemaining = e.TotalBytesToReceive - e.BytesReceived;
                 }
                 else
                 {
                     Per = e.ProgressPercentage;
                     BytesRemaining = e.TotalBytesToReceive - e.BytesReceived;
                 }
-                MbRecieved = (int)e.BytesReceived / 1048576;
+                MbRecieved = e.BytesReceived / 1048576;
+                MBTotal = e.TotalBytesToReceive / 1048576;
                 pointwrited = Per / 2;
                 if (TExpired == 60)
                 {
@@ -99,19 +103,19 @@ namespace ConsoleApp1
                 }
                 if (PER1 + 2 < Time)
                 {
-                    TNeed = (int)BytesRemaining / (int)e.BytesReceived * Time;
+                    TNeed = BytesRemaining / e.BytesReceived * Time;
                     PER1 = Time;
                 }
                 if (PER2 < Time)
                 {
-                    DSpeed = (int)e.BytesReceived / Time / 1000;
+                    DSpeed = e.BytesReceived / Time / 1000;
                     PER2 = Time;
                 }
             };
             webClient.DownloadFileCompleted += (s, e) =>
             {
                 AfterDWNEnd = true;
-                while (PrintCompleted == true)
+                while (PrlongCompleted == true)
                 {
                     Thread.Sleep(20);
                 }
@@ -132,9 +136,9 @@ namespace ConsoleApp1
             };
             webClient.DownloadFileAsync(new Uri(url), path + name);
 
-            Thread Printing = new Thread(DownLoadPrint);
-            Printing.IsBackground = true;
-            Printing.Start();
+            Thread Prlonging = new Thread(DownLoadPrint);
+            Prlonging.IsBackground = true;
+            Prlonging.Start();
 
             do
             {
@@ -150,19 +154,37 @@ namespace ConsoleApp1
             Console.CursorVisible = false;
 
             int pos = Console.CursorTop;
+            Console.SetCursorPosition(0, pos);
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write("╔═══════════════════════ Скачивание ═══════════════════════╗");
+            Console.Write(new string(' ', Console.WindowWidth - Console.CursorLeft));
+
+            Console.SetCursorPosition(0, pos + 1);
+            Console.Write("║ ");
+            Console.Write("Файл: " + nametowrite);
+            long temppos1 = Console.CursorLeft;
+
+            Console.SetCursorPosition(0, pos + 4);
+            Console.Write("╚══════════════════════════════════════════════════════════╝");
+
+            long LastDSpeed = 999999999;
+            string LastPBar = "";
+
+
+
+
+
             do
             {
-                Console.SetCursorPosition(0, pos);
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.Write("╔═══════════════════════ Скачивание ═══════════════════════╗");
-                Console.Write(new string(' ', Console.WindowWidth - Console.CursorLeft));
-                Console.SetCursorPosition(0, pos + 1);
-                Console.Write("║ ");
-                Console.Write("Файл: " + nametowrite);
-                Console.Write(new string(' ', 51 - nametowrite.Length - 6 - Convert.ToString(DSpeed).Length));
-                Console.Write("~" + DSpeed + "Kbps ");
-                Console.Write("║");
-                Console.Write(new string(' ', Console.WindowWidth - Console.CursorLeft));
+                Console.SetCursorPosition((int)temppos1, pos + 1);
+                if (LastDSpeed != DSpeed)
+                {
+                    Console.Write(new string(' ', 51 - nametowrite.Length - 6 - Convert.ToString(DSpeed).Length));
+                    Console.Write("~" + DSpeed + "Kbps ");
+                    Console.Write("║");
+                    Console.Write(new string(' ', Console.WindowWidth - Console.CursorLeft));
+                    LastDSpeed = DSpeed;
+                }
                 Console.SetCursorPosition(0, pos + 2);
                 Console.Write("║ ");
                 Console.Write("Прошло: ");
@@ -190,16 +212,21 @@ namespace ConsoleApp1
                 }
                 Console.Write(TExpired);
                 Console.Write(". Осталось: ");
-                Console.Write(TNeed + ". Скачано: " + MbRecieved + "Мб.");
+                Console.Write(TNeed + ". Скачано: " + MbRecieved + " из " + MBTotal + "Mb.");
                 Console.Write(new string(' ', 59 - Console.CursorLeft));
                 Console.Write("║");
                 Console.Write(new string(' ', Console.WindowWidth - Console.CursorLeft));
                 Console.SetCursorPosition(0, pos + 3);
                 Console.Write("║ ");
                 Random rnd = new Random();
-                //Console.Write(new string('█', pointwrited));
-                Console.Write(WritedString());
-                Console.Write(new string('▒', 50 - pointwrited));
+                string RandomPbarSymbols = WritedString();
+                if (RandomPbarSymbols + new string ('▒', 50 - pointwrited) != LastPBar)
+                {
+                    Console.Write(RandomPbarSymbols);
+                    Console.Write(new string('▒', 50 - pointwrited));
+                    LastPBar = RandomPbarSymbols + new string('▒', 50 - pointwrited);
+                }
+                Console.SetCursorPosition(53, pos + 3);
                 Console.Write("  ");
                 if (Per < 100)
                 {
@@ -211,12 +238,10 @@ namespace ConsoleApp1
                 }
                 Console.Write(Per + "%");
                 Console.SetCursorPosition(59, pos + 3);
-                Console.Write("║");
-                Console.SetCursorPosition(0, pos + 4);
-                Console.Write("╚══════════════════════════════════════════════════════════╝");
+                Console.WriteLine("║");
                 Thread.Sleep(50);
             } while (AfterDWNEnd != true);
-            PrintCompleted = true;
+            PrlongCompleted = true;
             Console.CursorVisible = true;
         }
 
@@ -227,7 +252,7 @@ namespace ConsoleApp1
             Random rnd = new Random();
             while (WritedString.Length != pointwrited)
             {
-                int randomcount = rnd.Next(0, 100);
+                long randomcount = rnd.Next(0, 100);
                 if (randomcount != 99)
                 {
                     
