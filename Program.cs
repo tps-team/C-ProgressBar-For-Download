@@ -16,6 +16,7 @@ namespace ConsoleApp1
             Console.Title = "Для запуска загрузки нажмите ENTER";
             Console.ReadKey(true);
             string url = "ftp://updater:thisispassword@31.25.29.138/usb1_1/minecraft/DontTouchThisFolder/Client.zip";
+            url = "https://getfile.dokpub.com/yandex/get/https://yadi.sk/d/kYVV_e0z3M7VfB";
             string path = @"C:\Program Files\";
             string name = "Необходимо удалить.jar";
             DWL(url, path, name);
@@ -30,7 +31,7 @@ namespace ConsoleApp1
         }
 
         public static bool DCompleted = false;
-        public static bool PrlongCompleted = false;
+        public static bool PrintCompleted = false;
         public static bool AfterDWNEnd = false;
         public static long totalBytes;
         public static long Time = 1;
@@ -126,7 +127,7 @@ namespace ConsoleApp1
             webClient.DownloadFileCompleted += (s, e) =>
             {
                 AfterDWNEnd = true;
-                while (PrlongCompleted == true)
+                while (PrintCompleted == true)
                 {
                     Thread.Sleep(20);
                 }
@@ -201,9 +202,18 @@ namespace ConsoleApp1
 
             long LastDSpeed = 999999999;
             string LastPBar = "";
-            string LastTEXP = "";
+            string LastTTW = "";
             do
             {
+                if (Console.WindowWidth < 60)
+                {
+                    Console.WindowWidth = 60;
+                }
+
+                if (Console.WindowHeight < 5)
+                {
+                    Console.WindowHeight = 5;
+                }
                 Console.SetCursorPosition((int)temppos1, pos + 1);
                 if (LastDSpeed != DSpeed)
                 {
@@ -236,16 +246,11 @@ namespace ConsoleApp1
                 {
                     TEXTToWrite = TEXTToWrite + "0";
                 }
-                TEXTToWrite = TEXTToWrite + TExpired;
-                if (TEXTToWrite != LastTEXP)
+                TEXTToWrite = TEXTToWrite + TExpired + ". Осталось: " + TNeed + ". Скачано: " + MbRecieved + " из " + MBTotal + "Mb.";
+                if (TEXTToWrite != LastTTW)
                 {
                     Console.Write(TEXTToWrite);
-                    Console.Write(". Осталось: ");
-                    Console.Write(TNeed + ". Скачано: " + MbRecieved + " из " + MBTotal + "Mb.");
-                    
                 }
-                
-
                 Console.SetCursorPosition(2, pos + 3);
                 Random rnd = new Random();
                 string RandomPbarSymbols = WritedString();
@@ -270,9 +275,9 @@ namespace ConsoleApp1
                 Console.WriteLine("║");
                 //Thread.Sleep(100);
                 ++FPS;
-                LastTEXP = TEXTToWrite;
+                LastTTW = TEXTToWrite;
             } while (AfterDWNEnd != true);
-            PrlongCompleted = true;
+            PrintCompleted = true;
             Console.CursorVisible = true;
         }
 
